@@ -3,12 +3,8 @@
     <h2>{{ editingId ? 'Edit Task' : 'Add Task' }}</h2>
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Course</mat-label>
-        <mat-select formControlName="course">
-          <mat-option *ngFor="let c of (courses$ | async) || []" [value]="c._id">
-            {{ c.name }} ({{ c.code }})
-          </mat-option>
-        </mat-select>
+        <mat-label>Course Id</mat-label>
+        <input matInput formControlName="course" />
         <mat-error *ngIf="form.get('course')?.hasError('required')">Course is required</mat-error>
       </mat-form-field>
 
@@ -93,7 +89,7 @@
       <tbody>
         <tr *ngFor="let t of tasks">
           <td>{{ t.title }}</td>
-          <td>{{ t.course }}</td>
+          <td>{{ getCourseLabel(t) }}</td>
           <td>{{ t.type }}</td>
           <td>{{ t.dueDate | date: 'mediumDate' }}</td>
           <td>{{ t.priority || '-' }}</td>

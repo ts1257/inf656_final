@@ -1,3 +1,77 @@
+:host {
+  display: block;
+}
+
+/* Modern Glass Navbar */
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
+  padding: 0 28px!important;
+
+  background: rgba(59, 130, 246, 0.85); /* Primary blue but glassy */
+  backdrop-filter: blur(12px);
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Logo / App Name */
+mat-toolbar > span:first-child {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+/* Push menu to the right */
 .spacer {
   flex: 1 1 auto;
+}
+
+/* Navigation buttons */
+button[mat-button] {
+  color: white;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 4px 10px;
+
+  border-radius: 8px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+/* Hover effect */
+button[mat-button]:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+/* Active router link styling (optional) */
+button.active-link {
+  background: rgba(255, 255, 255, 0.28);
+  font-weight: 600;
+}
+
+/* Username text */
+mat-toolbar span.user-name {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  margin-right: 6px;
+  font-weight: 500;
+}
+
+/* Logout button */
+button.logout-btn {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+button.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
 }

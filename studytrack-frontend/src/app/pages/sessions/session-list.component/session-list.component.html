@@ -1,0 +1,118 @@
+<div class="sessions-container">
+  <mat-card class="form-card">
+    <h2>{{ editingId ? 'Edit Study Session' : 'Schedule Study Session' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Course</mat-label>
+        <mat-select formControlName="course">
+          <mat-option value="">None</mat-option>
+          <mat-option *ngFor="let c of (courses$ | async) || []" [value]="c._id">
+            {{ c.name }} ({{ c.code }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Task</mat-label>
+        <mat-select formControlName="task">
+          <mat-option value="">None</mat-option>
+          <mat-option *ngFor="let t of (filteredTasks$ | async) || []" [value]="t._id">
+            {{ t.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date</mat-label>
+        <input matInput formControlName="date" type="date" />
+        <mat-error *ngIf="form.get('date')?.hasError('required')">Date is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Start Time</mat-label>
+        <input matInput formControlName="startTime" type="time" />
+        <mat-error *ngIf="form.get('startTime')?.hasError('required')">
+          Start time is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Duration (minutes)</mat-label>
+        <input matInput formControlName="durationMinutes" type="number" min="15" step="15" />
+        <mat-error *ngIf="form.get('durationMinutes')?.hasError('required')">
+          Duration is required
+        </mat-error>
+        <mat-error *ngIf="form.get('durationMinutes')?.hasError('min')">
+          Minimum is 15 minutes
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Notes</mat-label>
+        <textarea matInput formControlName="notes" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let s of statuses" [value]="s">
+            {{ s }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="buttons">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          {{ editingId ? 'Update' : 'Create' }}
+        </button>
+        <button
+          *ngIf="editingId"
+          mat-button
+          type="button"
+          (click)="cancelEdit()"
+          [disabled]="loading"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <h2>Your Study Sessions</h2>
+
+    <table class="full-width" *ngIf="(sessions$ | async) as sessions">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Course</th>
+          <th>Task</th>
+          <th>Status</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of sessions">
+          <td>{{ s.date | date: 'mediumDate' }}</td>
+          <td>{{ s.startTime }}</td>
+          <td>{{ s.durationMinutes }} min</td>
+          <td>{{ getSessionCourseLabel(s) }}</td>
+          <td>{{ getSessionTaskLabel(s) }}</td>
+          <td>{{ s.status || '-' }}</td>
+          <td>{{ s.notes || '-' }}</td>
+          <td>
+            <button mat-button color="primary" (click)="edit(s)">Edit</button>
+            <button mat-button color="warn" (click)="delete(s)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="(sessions$ | async)?.length === 0" class="empty">
+      No study sessions yet. Create one above.
+    </p>
+  </mat-card>
+</div>

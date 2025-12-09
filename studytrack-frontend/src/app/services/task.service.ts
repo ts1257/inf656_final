@@ -3,9 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../config';
 import { Observable } from 'rxjs';
 
+export type TaskCourseField =
+  | string
+  | {
+      _id: string;
+      name?: string;
+      code?: string;
+    };
+
 export interface Task {
   _id?: string;
-  course: string;
+  course: TaskCourseField;
   title: string;
   type: 'assignment' | 'exam' | 'project' | 'quiz';
   dueDate: string;
@@ -15,7 +23,7 @@ export interface Task {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskService {
   private baseUrl = `${API_URL}/tasks`;

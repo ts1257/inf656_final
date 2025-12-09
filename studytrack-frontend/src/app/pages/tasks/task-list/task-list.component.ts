@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Task, TaskService } from '../../../services/task.service';
-import { Course, CourseService } from '../../../services/course.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -32,7 +31,6 @@ import { Observable } from 'rxjs';
 })
 export class TaskListComponent implements OnInit {
   tasks$!: Observable<Task[]>;
-  courses$!: Observable<Course[]>;
   form: FormGroup;
   editingId: string | null = null;
   loading = false;
@@ -43,7 +41,6 @@ export class TaskListComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    private courseService: CourseService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {
@@ -60,7 +57,6 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTasks();
-    this.courses$ = this.courseService.getCourses();
   }
 
   loadTasks(): void {
@@ -73,7 +69,7 @@ export class TaskListComponent implements OnInit {
       return;
     }
 
-    const value = this.form.value as Task;
+    const value = this.form.value as unknown as Task;
     this.loading = true;
 
     if (this.editingId) {
@@ -107,8 +103,16 @@ export class TaskListComponent implements OnInit {
 
   edit(task: Task): void {
     this.editingId = task._id || null;
+
+    const courseId =
+      typeof task.course === 'string'
+        ? task.course
+        : task.course && typeof task.course === 'object'
+        ? task.course._id
+        : '';
+
     this.form.patchValue({
-      course: task.course,
+      course: courseId,
       title: task.title,
       type: task.type,
       dueDate: task.dueDate.substring(0, 10),
@@ -149,5 +153,16 @@ export class TaskListComponent implements OnInit {
         this.snackBar.open('Failed to delete task', 'Close', { duration: 3000 });
       }
     });
+  }
+
+  getCourseLabel(task: Task): string {
+    const c: any = task.course;
+    if (!c) return '-';
+    if (typeof c === 'string') return c;
+    if (c.name && c.code) return `${c.name} (${c.code})`;
+    if (c.name) return c.name;
+    if (c.code) return c.code;
+    if (c._id) return c._id;
+    return '-';
   }
 }

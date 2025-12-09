@@ -1,2 +1,166 @@
-<h1>Dashboard</h1>
-<p>Welcome to StudyTrack. Courses, Tasks, and Study Sessions will show here.</p>
+<div *ngIf="vm$ | async as vm" class="dashboard-container">
+  <!-- Top stats row -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <h3>Tasks</h3>
+      <p class="stat-number">{{ vm.stats.totalTasks }}</p>
+      <p>Not started: {{ vm.stats.notStarted }}</p>
+      <p>In progress: {{ vm.stats.inProgress }}</p>
+      <p>Done: {{ vm.stats.done }}</p>
+      <button mat-button color="primary" routerLink="/tasks">View Tasks</button>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <h3>Sessions</h3>
+      <p class="stat-number">{{ vm.stats.totalSessions }}</p>
+      <p>Planned: {{ vm.stats.plannedSessions }}</p>
+      <p>Completed: {{ vm.stats.completedSessions }}</p>
+      <p>Canceled: {{ vm.stats.canceledSessions }}</p>
+      <button mat-button color="primary" routerLink="/sessions">View Sessions</button>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <h3>Courses</h3>
+      <p class="stat-number">{{ vm.stats.totalCourses }}</p>
+      <div *ngIf="vm.stats.courseStatuses.length > 0" class="course-status-list">
+        <p *ngFor="let cs of vm.stats.courseStatuses">
+          {{ cs.semester }}: {{ cs.count }}
+        </p>
+      </div>
+      <button mat-button color="primary" routerLink="/courses">View Courses</button>
+    </mat-card>
+  </div>
+
+  <!-- Today + Upcoming row -->
+  <div class="bottom-grid">
+    <!-- Today -->
+    <div class="today-section">
+      <mat-card>
+        <h2>
+          Today
+          <span class="sub-heading">
+            (Tasks: {{ vm.todayTasks.length }},
+            Sessions: {{ vm.todaySessions.length }},
+            Minutes: {{ vm.stats.minutesToday }})
+          </span>
+        </h2>
+
+        <div *ngIf="vm.todayTasks.length > 0; else noTasksToday">
+          <h3>Tasks due today</h3>
+          <table class="full-width  today-tasks-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Course</th>
+                <th>Priority</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of vm.todayTasks">
+                <td>{{ t.title }}</td>
+                <td>{{ t.courseLabel }}</td>
+                <td>{{ t.priority || '-' }}</td>
+                <td>{{ t.status || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noTasksToday>
+          <p>No tasks due today.</p>
+        </ng-template>
+
+        <div *ngIf="vm.todaySessions.length > 0; else noSessionsToday" class="today-sessions">
+          <h3>Today’s study sessions</h3>
+          <table class="full-width">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of vm.todaySessions">
+                <td>{{ s.courseLabel }}</td>
+                <td>{{ s.startTime }}</td>
+                <td>{{ s.durationMinutes }} min</td>
+                <td>{{ s.status || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noSessionsToday>
+          <p>No study sessions scheduled for today.</p>
+        </ng-template>
+      </mat-card>
+    </div>
+
+    <!-- Upcoming (tasks + sessions) -->
+    <div class="upcoming-section">
+      <mat-card>
+        <h2>
+          Upcoming (next 7 days)
+          <span class="sub-heading">
+            (Tasks: {{ vm.upcomingTasks.length }}, Sessions: {{ vm.upcomingSessions.length }})
+          </span>
+        </h2>
+
+        <div *ngIf="vm.upcomingTasks.length > 0; else noUpcomingTasks">
+          <h3>Tasks</h3>
+          <table class="full-width upcoming-tasks-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Course</th>
+                <th>Type</th>
+                <th>Due</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of vm.upcomingTasks">
+                <td>{{ t.title }}</td>
+                <td>{{ t.courseLabel }}</td>
+                <td>{{ t.type }}</td>
+                <td>{{ t.dueDate | date: 'mediumDate' }}</td>
+                <td>{{ t.priority || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noUpcomingTasks>
+          <p>No tasks due in the next 7 days.</p>
+        </ng-template>
+
+        <div *ngIf="vm.upcomingSessions.length > 0; else noUpcomingSessions" class="upcoming-sessions">
+          <h3>Study sessions</h3>
+          <table class="full-width upcoming-sessions-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Course</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of vm.upcomingSessions">
+                <td>{{ s.date | date: 'mediumDate' }}</td>
+                <td>{{ s.courseLabel }}</td>
+                <td>{{ s.startTime }}</td>
+                <td>{{ s.durationMinutes }} min</td>
+                <td>{{ s.status || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noUpcomingSessions>
+          <p>No study sessions scheduled in the next 7 days.</p>
+        </ng-template>
+      </mat-card>
+    </div>
+  </div>
+</div>

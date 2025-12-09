@@ -1,21 +1,93 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #dbeafe 0, #eff6ff 32%, #f9fafb 70%);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Center card */
 .auth-container {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  align-items: center;
+  padding: 24px 16px;
 }
 
+/* Card Design */
 mat-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  padding: 22px 24px 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  background: #ffffff;
+  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.16);
+  box-sizing: border-box;
 }
 
+/* Title */
+mat-card h2 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+  text-align: center;
+}
+
+/* Form fields */
 .full-width {
   width: 100%;
 }
 
+.mat-mdc-form-field {
+  margin-bottom: 10px;
+}
+
+/* Register button */
+button[mat-raised-button].full-width {
+  margin-top: 4px;
+  font-weight: 600;
+  padding: 10px 0;
+  border-radius: 999px;
+}
+
+button[mat-raised-button][disabled] {
+  opacity: 0.75;
+}
+
+/* Switch (link to login) */
 .switch {
   margin-top: 16px;
+  text-align: center;
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.switch a {
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 600;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.switch a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  mat-card {
+    padding: 20px 18px 22px;
+    border-radius: 18px;
+  }
+
+  mat-card h2 {
+    font-size: 1.25rem;
+  }
 }
