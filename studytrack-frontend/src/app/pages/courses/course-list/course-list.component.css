@@ -1,0 +1,39 @@
+.courses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 800px) {
+  .courses-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.form-card,
+.table-card {
+  width: 100%;
+}
+
+.form-card {
+  max-width: 380px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+table {
+  width: 100%;
+}
+
+.empty {
+  margin-top: 8px;
+}

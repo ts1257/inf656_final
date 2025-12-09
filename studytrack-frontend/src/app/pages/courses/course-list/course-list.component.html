@@ -1,0 +1,75 @@
+<div class="courses-container">
+  <mat-card class="form-card">
+    <h2>{{ editingId ? 'Edit Course' : 'Add Course' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Course Name</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Course Code</mat-label>
+        <input matInput formControlName="code" />
+        <mat-error *ngIf="form.get('code')?.hasError('required')">Code is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Instructor</mat-label>
+        <input matInput formControlName="instructor" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Semester</mat-label>
+        <input matInput formControlName="semester" />
+      </mat-form-field>
+
+      <div class="buttons">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          {{ editingId ? 'Update' : 'Create' }}
+        </button>
+        <button
+          *ngIf="editingId"
+          mat-button
+          type="button"
+          (click)="cancelEdit()"
+          [disabled]="loading"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <h2>Your Courses</h2>
+
+    <table class="full-width" *ngIf="(courses$ | async) as courses">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Code</th>
+          <th>Instructor</th>
+          <th>Semester</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of courses">
+          <td>{{ c.name }}</td>
+          <td>{{ c.code }}</td>
+          <td>{{ c.instructor || '-' }}</td>
+          <td>{{ c.semester || '-' }}</td>
+          <td>
+            <button mat-button color="primary" (click)="edit(c)">Edit</button>
+            <button mat-button color="warn" (click)="delete(c)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="(courses$ | async)?.length === 0" class="empty">
+      No courses yet. Add one above.
+    </p>
+  </mat-card>
+</div>
