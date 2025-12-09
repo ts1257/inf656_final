@@ -1,0 +1,114 @@
+<div class="tasks-container">
+  <mat-card class="form-card">
+    <h2>{{ editingId ? 'Edit Task' : 'Add Task' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Course</mat-label>
+        <mat-select formControlName="course">
+          <mat-option *ngFor="let c of (courses$ | async) || []" [value]="c._id">
+            {{ c.name }} ({{ c.code }})
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('course')?.hasError('required')">Course is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+        <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let t of taskTypes" [value]="t">
+            {{ t }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('type')?.hasError('required')">Type is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Due Date</mat-label>
+        <input matInput formControlName="dueDate" type="date" />
+        <mat-error *ngIf="form.get('dueDate')?.hasError('required')">Due date is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Estimated Time (hours)</mat-label>
+        <input matInput formControlName="estimatedTimeHours" type="number" min="0" step="0.5" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          <mat-option *ngFor="let p of priorities" [value]="p">
+            {{ p }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let s of statuses" [value]="s">
+            {{ s }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="buttons">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          {{ editingId ? 'Update' : 'Create' }}
+        </button>
+        <button
+          *ngIf="editingId"
+          mat-button
+          type="button"
+          (click)="cancelEdit()"
+          [disabled]="loading"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <h2>Your Tasks</h2>
+
+    <table class="full-width" *ngIf="(tasks$ | async) as tasks">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Course</th>
+          <th>Type</th>
+          <th>Due</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Est. Hours</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tasks">
+          <td>{{ t.title }}</td>
+          <td>{{ t.course }}</td>
+          <td>{{ t.type }}</td>
+          <td>{{ t.dueDate | date: 'mediumDate' }}</td>
+          <td>{{ t.priority || '-' }}</td>
+          <td>{{ t.status || '-' }}</td>
+          <td>{{ t.estimatedTimeHours || '-' }}</td>
+          <td>
+            <button mat-button color="primary" (click)="edit(t)">Edit</button>
+            <button mat-button color="warn" (click)="delete(t)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="(tasks$ | async)?.length === 0" class="empty">
+      No tasks yet. Add one above.
+    </p>
+  </mat-card>
+</div>

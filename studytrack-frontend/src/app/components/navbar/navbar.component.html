@@ -6,6 +6,7 @@
   <ng-container *ngIf="currentUser$ | async as user; else guest">
     <button mat-button routerLink="/dashboard">Dashboard</button>
     <button mat-button routerLink="/courses">Courses</button>
+    <button mat-button routerLink="/tasks">Tasks</button>
     <span>{{ user.name }}</span>
     <button mat-button (click)="logout()">Logout</button>
   </ng-container>

@@ -1,0 +1,46 @@
+.tasks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .tasks-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.form-card,
+.table-card {
+  width: 100%;
+}
+
+.form-card {
+  max-width: 420px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  text-align: left;
+}
+
+.empty {
+  margin-top: 8px;
+}
