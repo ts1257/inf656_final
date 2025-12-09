@@ -1,0 +1,21 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+mat-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.switch {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}

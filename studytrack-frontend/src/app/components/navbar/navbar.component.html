@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+  <span>StudyTrack</span>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="currentUser$ | async as user; else guest">
+    <span>{{ user.name }}</span>
+    <button mat-button routerLink="/dashboard">Dashboard</button>
+    <button mat-button (click)="logout()">Logout</button>
+  </ng-container>
+
+  <ng-template #guest>
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-button routerLink="/register">Register</button>
+  </ng-template>
+</mat-toolbar>
