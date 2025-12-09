@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Task, TaskService } from '../../../services/task.service';
+import { Course, CourseService } from '../../../services/course.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -31,6 +32,7 @@ import { Observable } from 'rxjs';
 })
 export class TaskListComponent implements OnInit {
   tasks$!: Observable<Task[]>;
+  courses$!: Observable<Course[]>;
   form: FormGroup;
   editingId: string | null = null;
   loading = false;
@@ -41,6 +43,7 @@ export class TaskListComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
+    private courseService: CourseService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {
@@ -57,6 +60,11 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTasks();
+    this.loadCourses();
+  }
+
+  loadCourses(): void {
+    this.courses$ = this.courseService.getCourses();
   }
 
   loadTasks(): void {
@@ -69,7 +77,20 @@ export class TaskListComponent implements OnInit {
       return;
     }
 
-    const value = this.form.value as unknown as Task;
+    const formValue = this.form.value;
+    // Fix date timezone issue: ensure date is sent as ISO string at noon to avoid day shifts
+    let dueDate = formValue.dueDate;
+    if (dueDate) {
+      // Append 'T12:00:00' to avoid timezone day shifts (noon in local time)
+      // This ensures the date stays the same when converted to UTC
+      const date = new Date(dueDate + 'T12:00:00');
+      dueDate = date.toISOString();
+    }
+
+    const value = {
+      ...formValue,
+      dueDate
+    } as unknown as Task;
     this.loading = true;
 
     if (this.editingId) {
@@ -111,15 +132,33 @@ export class TaskListComponent implements OnInit {
         ? task.course._id
         : '';
 
+    // Fix date timezone issue: convert ISO date to local date string (YYYY-MM-DD)
+    let dueDateStr = '';
+    if (task.dueDate) {
+      const date = new Date(task.dueDate);
+      // Get local date components to avoid timezone shifts
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      dueDateStr = `${year}-${month}-${day}`;
+    }
+
     this.form.patchValue({
       course: courseId,
       title: task.title,
       type: task.type,
-      dueDate: task.dueDate.substring(0, 10),
+      dueDate: dueDateStr,
       estimatedTimeHours: task.estimatedTimeHours || '',
       priority: task.priority || 'medium',
       status: task.status || 'not-started'
     });
+  }
+
+  getCourseDisplayName(course: Course): string {
+    if (course.name && course.code) {
+      return `${course.name} (${course.code})`;
+    }
+    return course.name || course.code || '';
   }
 
   cancelEdit(): void {

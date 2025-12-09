@@ -35,7 +35,7 @@ const createTask = async (req, res, next) => {
       return res.json({ errors: errors.array() });
     }
 
-    const { course, title, type, dueDate, estimatedTimeHours, priority } = req.body;
+    const { course, title, type, dueDate, estimatedTimeHours, priority, status } = req.body;
 
     const task = await Task.create({
       user: req.user._id,
@@ -44,7 +44,8 @@ const createTask = async (req, res, next) => {
       type,
       dueDate,
       estimatedTimeHours,
-      priority
+      priority,
+      status
     });
 
     res.status(201).json(task);

@@ -3,8 +3,12 @@
     <h2>{{ editingId ? 'Edit Task' : 'Add Task' }}</h2>
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Course Id</mat-label>
-        <input matInput formControlName="course" />
+        <mat-label>Course</mat-label>
+        <mat-select formControlName="course">
+          <mat-option *ngFor="let course of courses$ | async" [value]="course._id">
+            {{ getCourseDisplayName(course) }}
+          </mat-option>
+        </mat-select>
         <mat-error *ngIf="form.get('course')?.hasError('required')">Course is required</mat-error>
       </mat-form-field>
 
